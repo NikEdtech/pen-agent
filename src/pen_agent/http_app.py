@@ -38,35 +38,47 @@ def create_app(settings: Optional[Settings] = None):
     settings = settings or Settings.from_env()
     mcp = build_mcp(settings)
 
-    # Prefer streamable HTTP app from FastMCP
+    # Prefer streamable HTTP app from MCPServer / FastMCP
     app = None
     for attr in ("streamable_http_app", "sse_app", "app"):
         if hasattr(mcp, attr):
             maybe = getattr(mcp, attr)
-            app = maybe() if callable(maybe) else maybe
+            try:
+                app = maybe() if callable(maybe) else maybe
+            except TypeError:
+                # Some builds expose a property already constructed
+                app = maybe
             if app is not None:
                 break
     if app is None:
         raise RuntimeError(
-            "This mcp FastMCP build has no HTTP app. "
+            "This mcp build has no HTTP app. "
             "Upgrade mcp or use --transport stdio."
         )
 
-    # Health route
     async def health(_request: Request) -> Response:
         return JSONResponse(
             {
                 "ok": True,
                 "service": "pen-agent",
                 "profile": settings.profile,
-                "auth": bool(settings.auth_token),
+                "auth": bool(settings.auth_token or os.environ.get("PEN_AGENT_TOKEN")),
             }
         )
 
+    # Mount health without breaking MCP routes
     try:
-        from starlette.routing import Route
+        from starlette.applications import Starlette
+        from starlette.routing import Mount, Route
 
-        app.routes.insert(0, Route("/health", health))
+        outer = Starlette(
+            routes=[
+                Route("/health", health),
+                Route("/", health),
+                Mount("/", app=app),
+            ]
+        )
+        app = outer
     except Exception:
         pass
 

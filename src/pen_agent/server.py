@@ -12,7 +12,10 @@ from pen_agent.config import Settings
 from pen_agent.service import BusyError, JobResult, PenService
 
 try:
-    from mcp.server.fastmcp import FastMCP
+    try:
+        from mcp.server.mcpserver import MCPServer as _Server
+    except ImportError:  # mcp 1.x
+        from mcp.server.fastmcp import FastMCP as _Server
 except ImportError as exc:  # pragma: no cover
     raise SystemExit(
         "The 'mcp' package is required (Python >= 3.10). "
@@ -35,10 +38,10 @@ def _job_dict(job: JobResult) -> Dict[str, Any]:
     }
 
 
-def build_mcp(settings: Optional[Settings] = None) -> FastMCP:
+def build_mcp(settings: Optional[Settings] = None):
     settings = settings or Settings.from_env()
     service = PenService(settings)
-    mcp = FastMCP(
+    mcp = _Server(
         "pen-agent",
         instructions=(
             "Give your agent a pen. Control a GRBL pen plotter: write handwriting "
