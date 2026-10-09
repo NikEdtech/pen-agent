@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "pen-agent": {
+      "command": "pen-agent-mcp",
+      "args": [],
+      "env": {
+        "PEN_AGENT_PROFILE": "jingan",
+        "PEN_AGENT_DRY_RUN_DEFAULT": "1"
+      }
+    },
+    "pen-agent-remote": {
+      "url": "http://DESKTOP-OUG8R1F:8765/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PEN_AGENT_TOKEN}"
+      }
+    }
+  }
+}

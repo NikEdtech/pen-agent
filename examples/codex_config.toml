@@ -1,0 +1,10 @@
+# Example Codex MCP config snippet
+# https://github.com/NikEdtech/pen-agent
+
+[mcp_servers.pen-agent]
+command = "pen-agent-mcp"
+args = []
+
+[mcp_servers.pen-agent.env]
+PEN_AGENT_PROFILE = "jingan"
+PEN_AGENT_DRY_RUN_DEFAULT = "1"

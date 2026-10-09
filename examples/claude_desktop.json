@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "pen-agent": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/NikEdtech/pen-agent", "pen-agent-mcp"],
+      "env": {
+        "PEN_AGENT_PROFILE": "jingan",
+        "PEN_AGENT_DRY_RUN_DEFAULT": "1"
+      }
+    }
+  }
+}

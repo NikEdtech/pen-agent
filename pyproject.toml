@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pen-agent"
+version = "0.1.0"
+description = "Give your agent a pen — MCP server for GRBL pen plotters"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Nikita Esipov" }]
+keywords = ["mcp", "pen-plotter", "grbl", "agent", "handwriting", "claude", "cursor"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+  "grbl-pen-plotter @ git+https://github.com/NikEdtech/grbl-pen-plotter.git@main",
+  "mcp>=1.6.0",
+  "opencv-python-headless>=4.8.0",
+  "Pillow>=9.0.0",
+  "uvicorn[standard]>=0.30.0",
+  "starlette>=0.37.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+pen-agent = "pen_agent.cli:main"
+pen-agent-mcp = "pen_agent.server:main"
+
+[project.urls]
+Homepage = "https://github.com/NikEdtech/pen-agent"
+Repository = "https://github.com/NikEdtech/pen-agent"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pen_agent = ["py.typed", "templates/*.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
